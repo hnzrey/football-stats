@@ -4,7 +4,7 @@ import { Box, Input, Button } from '@chakra-ui/react';
 interface TeamSearchProps {
   onSearch: (teamName: string) => void;
 }
-
+const message = 'Enter team name'
 const TeamSearch: React.FC<TeamSearchProps> = ({ onSearch }) => {
   const [teamName, setTeamName] = useState('');
 
@@ -16,7 +16,7 @@ const TeamSearch: React.FC<TeamSearchProps> = ({ onSearch }) => {
     <Box>&nbsp;</Box>
     <Box>
       <Input
-        placeholder="Enter team name"
+        placeholder={message}
         value={teamName}
         onChange={e => setTeamName(e.target.value)}
         mb={4}

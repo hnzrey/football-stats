@@ -4,8 +4,12 @@ import axios from 'axios';
 const app = express();
 const port = 4000;
 
-const API_KEY = 'you api key goes here'; // obviously it should not be hardcoded here
+const API_KEY = 'api key'; // dotenv should be used here, skipped because of technical issues and time pressure
 const BASE_URL = 'https://api.football-data.org/v4';
+const COMPETITION = 'Premier League';
+const DRAW = 'DRAW';
+const HOME_TEAM = 'HOME_TEAM';
+const AWAY_TEAM = 'AWAY_TEAM';
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -14,6 +18,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// refactor to move logic to separate file
 app.get('/team/:teamName', async (req, res) => {
     try {
         const teamName = req.params.teamName;
@@ -45,12 +50,12 @@ async function getTeamInfo(teamName) {
 }
 
 async function getTeamStats(teamId) {
-    const response = await axios.get(`${BASE_URL}/teams/${teamId}/matches?status=FINISHED&season=2021`, {
+    const response = await axios.get(`${BASE_URL}/teams/${teamId}/matches?status=FINISHED&season=2021`, { //axios instance should be used
         headers: { 'X-Auth-Token': API_KEY },
     });
 
     const matches = response.data.matches.filter(
-        match => match.competition.name === 'Premier League'
+        match => match.competition.name === COMPETITION
     );
 
     let wins = 0;
@@ -64,14 +69,14 @@ async function getTeamStats(teamId) {
 
     matches.forEach(match => {
 
-        if (match.score.winner === 'DRAW') {
+        if (match.score.winner === DRAW) {
             draws++;
         } else if (
-            (match.score.winner === 'HOME_TEAM' && match.homeTeam.id === teamId)
+            (match.score.winner === HOME_TEAM && match.homeTeam.id === teamId)
         ) {
             winsHome++;
         } else if (
-          (match.score.winner === 'AWAY_TEAM' && match.awayTeam.id === teamId)
+          (match.score.winner === AWAY_TEAM  && match.awayTeam.id === teamId)
         ) {
             winsAway++;
         } else {

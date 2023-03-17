@@ -17,7 +17,9 @@ const App: React.FC = () => {
     try {
       const apiUrl = 'http://localhost:4000/team';
       const response = await axios.get(`${apiUrl}/${encodeURIComponent(teamName)}`);
-
+      // Axios instance should be used instead
+      // refactor to use separate service for data fetch
+      // refactor to use useQuery hook
       const {teamInfo, stats} = response.data;
 
       setTeam({...teamInfo});
