@@ -8,7 +8,7 @@ import TeamStats, { TeamStatsModel } from './components/TeamStats';
 
 interface Team {
   address: string;
-  phone: string;
+  founded: string;
   website: string;
 }
 
@@ -27,7 +27,7 @@ const App: React.FC = () => {
 
       setTeam({
         address: teamInfo.address,
-        phone: teamInfo.phone,
+        founded: teamInfo.founded,
         website: teamInfo.website,
       });
 
@@ -54,6 +54,9 @@ const App: React.FC = () => {
 
   return (
     <VStack>
+      <Box>
+        Example team name: Manchester United FC
+      </Box>
       <Box>
         <TeamSearch onSearch={getTeamData} />
       </Box>

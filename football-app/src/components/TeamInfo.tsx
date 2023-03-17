@@ -3,7 +3,7 @@ import { Box, VStack, Text } from '@chakra-ui/react';
 
 interface Team {
   address: string;
-  phone: string;
+  founded: string; // it seems that there is no phone present in API. I used founder year instead to display something interesting
   website: string;
 }
 
@@ -18,7 +18,7 @@ const TeamInfo: React.FC<TeamInfoProps> = ({ team }) => {
     <VStack spacing={5} alignItems="flex-start">
       <Text fontSize={"xl"} fontWeight={"bold"}>Team Information</Text>
       <Text>Address: {team.address}</Text>
-      <Text>Phone: {team.phone}</Text>
+      <Text>year founded: {team.founded}</Text> 
       <Text>Website: {team.website}</Text>
     </VStack>
   );

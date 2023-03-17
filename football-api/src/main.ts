@@ -4,7 +4,7 @@ import axios from 'axios';
 const app = express();
 const port = 4000;
 
-const API_KEY = 'PUT YOUR API KEY HERE'; // obviously it should not be hardcoded here
+const API_KEY = 'you api key goes here'; // obviously it should not be hardcoded here
 const BASE_URL = 'https://api.football-data.org/v4';
 
 app.use((req, res, next) => {
@@ -39,7 +39,7 @@ async function getTeamInfo(teamName) {
     return {
         id: team.id,
         address: team.address,
-        phone: team.phone,
+        founded: team.founded, // it seems that there is no phone present in API. I used founder year instead to display something interesting
         website: team.website,
     };
 }
