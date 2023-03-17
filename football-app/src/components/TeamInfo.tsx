@@ -1,14 +1,14 @@
 import React from 'react';
 import { Box, VStack, Text } from '@chakra-ui/react';
 
-interface Team {
+export interface TeamModel {
   address: string;
   founded: string; // it seems that there is no phone present in API. I used founder year instead to display something interesting
   website: string;
 }
 
 interface TeamInfoProps {
-  team: Team | null;
+  team: TeamModel | null;
 }
 
 const TeamInfo: React.FC<TeamInfoProps> = ({ team }) => {

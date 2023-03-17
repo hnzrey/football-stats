@@ -8,6 +8,7 @@ export interface TeamStatsModel {
   averageGoals: number;
   goalsAway: number;
   goalsHome: number;
+  totalGoals: number;
 }
 
 interface TeamStatsProps {
@@ -25,6 +26,7 @@ const TeamStats: React.FC<TeamStatsProps> = ({ stats }) => {
       <Text>Losses: {stats.losses}</Text>
       <Text>Goals at Home: {stats.goalsHome}</Text>
       <Text>Goals at Away: {stats.goalsAway}</Text>
+      <Text>Total goals: {stats.totalGoals}</Text>
       <Text>Average Goals: {stats.averageGoals?.toFixed(2)}</Text>
     </VStack>
   );
