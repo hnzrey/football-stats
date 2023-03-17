@@ -1,24 +1,35 @@
 import express from 'express';
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = 4000;
 
-const API_KEY = 'api key'; // dotenv should be used here, skipped because of technical issues and time pressure
+const API_KEY = process.env.API_KEY;
 const BASE_URL = 'https://api.football-data.org/v4';
-const COMPETITION = 'Premier League';
-const DRAW = 'DRAW';
-const HOME_TEAM = 'HOME_TEAM';
-const AWAY_TEAM = 'AWAY_TEAM';
+const constants = {
+  COMPETITION: 'Premier League',
+  DRAW: 'DRAW',
+  HOME_TEAM: 'HOME_TEAM',
+  AWAY_TEAM: 'AWAY_TEAM',
+  SEASON: '2021'
+};
+
+const footballAPI = axios.create({
+  baseURL: BASE_URL,
+  headers: { 'X-Auth-Token': API_KEY },
+});
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Methods', 'GET');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
 
-// refactor to move logic to separate file
+
 app.get('/team/:teamName', async (req, res) => {
     try {
         const teamName = req.params.teamName;
@@ -35,9 +46,7 @@ app.get('/team/:teamName', async (req, res) => {
 });
 
 async function getTeamInfo(teamName) {
-    const response = await axios.get(`${BASE_URL}/competitions/PL/teams`, {
-        headers: { 'X-Auth-Token': API_KEY },
-    });
+    const response = await footballAPI.get('/competitions/PL/teams');
     const team = response.data.teams.find(t => t.name.toLowerCase() === teamName.toLowerCase());
     if (!team) throw new Error('Team not found');
 
@@ -50,18 +59,13 @@ async function getTeamInfo(teamName) {
 }
 
 async function getTeamStats(teamId) {
-    const response = await axios.get(`${BASE_URL}/teams/${teamId}/matches?status=FINISHED&season=2021`, { //axios instance should be used
-        headers: { 'X-Auth-Token': API_KEY },
-    });
-
+    const response = await footballAPI.get(`/teams/${teamId}/matches?status=FINISHED&season=${constants.SEASON}`);
     const matches = response.data.matches.filter(
-        match => match.competition.name === COMPETITION
+        match => match.competition.name === constants.COMPETITION
     );
 
     let wins = 0;
     let draws = 0;
-    let winsHome = 0; // ah it turned out that it is not needed. no time to refactor.
-    let winsAway = 0; // ah it turned out that it is not needed. no time to refactor.
     let goalsHome = 0;
     let goalsAway = 0;
     let losses = 0;
@@ -69,20 +73,16 @@ async function getTeamStats(teamId) {
 
     matches.forEach(match => {
 
-        if (match.score.winner === DRAW) {
+        if (match.score.winner === constants.DRAW) {
             draws++;
         } else if (
-            (match.score.winner === HOME_TEAM && match.homeTeam.id === teamId)
+            (match.score.winner === constants.HOME_TEAM && match.homeTeam.id === teamId)
+            || (match.score.winner === constants.AWAY_TEAM  && match.awayTeam.id === teamId)
         ) {
-            winsHome++;
-        } else if (
-          (match.score.winner === AWAY_TEAM  && match.awayTeam.id === teamId)
-        ) {
-            winsAway++;
+            wins++;
         } else {
             losses++;
         }
-
 
         if (match.homeTeam.id === teamId) {
             goalsHome += match.score.fullTime.home;
@@ -93,7 +93,7 @@ async function getTeamStats(teamId) {
         }
     });
     const averageGoals = totalGoals / matches.length;
-    wins = winsAway + winsHome;
+
     return {
         wins,
         draws,

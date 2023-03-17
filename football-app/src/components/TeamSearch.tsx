@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Input, Button } from '@chakra-ui/react';
+import { Input, Button, VStack } from '@chakra-ui/react';
 
 interface TeamSearchProps {
   onSearch: (teamName: string) => void;
 }
-const message = 'Enter team name'
+
+const PLACEHOLDER_TEXT = 'Enter team name';
+
 const TeamSearch: React.FC<TeamSearchProps> = ({ onSearch }) => {
   const [teamName, setTeamName] = useState('');
 
@@ -12,20 +14,17 @@ const TeamSearch: React.FC<TeamSearchProps> = ({ onSearch }) => {
     onSearch(teamName);
   };
 
-  return (<>
-    <Box>&nbsp;</Box>
-    <Box>
+  return (
+    <VStack spacing={4}>
       <Input
-        placeholder={message}
+        placeholder={PLACEHOLDER_TEXT}
         value={teamName}
-        onChange={e => setTeamName(e.target.value)}
-        mb={4}
+        onChange={(e) => setTeamName(e.target.value)}
       />
       <Button onClick={handleSearch} colorScheme="blue">
         Search
       </Button>
-    </Box>
-    </>
+    </VStack>
   );
 };
 

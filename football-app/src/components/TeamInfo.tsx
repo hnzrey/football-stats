@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, VStack, Text } from '@chakra-ui/react';
+import { VStack, Text } from '@chakra-ui/react';
 
 export interface TeamModel {
   address: string;
